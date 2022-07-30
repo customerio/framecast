@@ -1,0 +1,52 @@
+{
+  "name": "framecast",
+  "version": "0.0.1",
+  "description": "TypeScript cross-frame communication library.",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "keywords": [
+    "broadcast",
+    "cross-frame",
+    "library",
+    "typescript"
+  ],
+  "scripts": {
+    "prepare": "npm run build",
+    "test": "jest",
+    "build": "tsc",
+    "lint": "eslint src",
+    "dev": "npx parcel example/index.html"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
+      "prettier --write"
+    ],
+    "__tests__/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
+      "prettier --write"
+    ]
+  },
+  "license": "MIT",
+  "private": false,
+  "devDependencies": {
+    "@types/jest": "^28.1.6",
+    "@typescript-eslint/eslint-plugin": "^5.31.0",
+    "@typescript-eslint/parser": "^5.31.0",
+    "eslint": "^8.20.0",
+    "husky": "^8.0.1",
+    "jest": "^28.1.3",
+    "lint-staged": "^13.0.3",
+    "parcel": "^2.6.2",
+    "prettier": "^2.7.1",
+    "process": "^0.11.10",
+    "ts-jest": "^28.0.7",
+    "typescript": "^4.7.4"
+  },
+  "dependencies": {
+    "debug": "^4.3.4"
+  }
+}

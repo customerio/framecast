@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>parent title</title>
+  </head>
+  <body style="display: flex; margin: 0; height: 100vh; width: 100vw">
+    <div style="width: 50%; padding: 20px">
+      <h3>Parent</h3>
+      <div style="display: flex; gap: 6px">
+        <button id="send-message">Send message to child</button>
+        <button id="toggle-console-log">Toggle console.log</button>
+        <button id="call-get-child-title">Call get child title</button>
+        <button id="call-undefined">Call undefined function</button>
+        <button id="call-timeout">Call function that times out</button>
+      </div>
+      <ul></ul>
+    </div>
+    <div style="width: 50%; padding: 20px">
+      <iframe
+        src="./iframe.html"
+        frameborder="0"
+        style="height: 100%; width: 100%"
+      ></iframe>
+    </div>
+    <script type="module">
+      localStorage.debug = 'framecast';
+      import { Framecast } from '../src';
+      const framecast = new Framecast(
+        document.querySelector('iframe').contentWindow,
+        { functionTimeoutMs: 5000 }
+      );
+
+      /**
+       * Add to the list when we get a message from the child
+       */
+      framecast.on('broadcast', (data) => {
+        document.querySelector('ul').innerHTML =
+          `<li>
+          <pre>${JSON.stringify(data, null, 2)}</pre>
+        </li>` + document.querySelector('ul').innerHTML;
+      });
+
+      /**
+       * Send a message to the child when the button is clicked
+       */
+      document.querySelector('#send-message').addEventListener('click', () => {
+        framecast.broadcast({
+          message: 'Hello from the parent!',
+          timestamp: Date.now(),
+        });
+      });
+
+      /**
+       * Toggle console.log
+       */
+      function consoleLog() {
+        console.log('parent received message from child');
+      }
+
+      let logging = false;
+      document
+        .querySelector('#toggle-console-log')
+        .addEventListener('click', () => {
+          if (logging) {
+            framecast.off('broadcast', consoleLog);
+            logging = false;
+          } else {
+            framecast.on('broadcast', consoleLog);
+            logging = true;
+          }
+        });
+
+      /**
+       * Get the title of the child
+       */
+      document
+        .querySelector('#call-get-child-title')
+        .addEventListener('click', async () => {
+          try {
+            const result = await framecast.call('getChildTitle');
+
+            document.querySelector('ul').innerHTML =
+              `<li>
+                <pre>${JSON.stringify(result, null, 2)}</pre>
+              </li>` + document.querySelector('ul').innerHTML;
+          } catch (error) {
+            document.querySelector('ul').innerHTML =
+              `<li>
+                <pre>${JSON.stringify(error.message, null, 2)}</pre>
+              </li>` + document.querySelector('ul').innerHTML;
+          }
+        });
+
+      /**
+       * Call an undefined function
+       */
+      document
+        .querySelector('#call-undefined')
+        .addEventListener('click', async () => {
+          try {
+            await framecast.call('undefinedFunction');
+          } catch (error) {
+            console.log('here');
+            document.querySelector('ul').innerHTML =
+              `<li>
+              <pre>${JSON.stringify(error.message, null, 2)}</pre>
+            </li>` + document.querySelector('ul').innerHTML;
+          }
+        });
+
+      /**
+       * Call a function that times out
+       */
+      document
+        .querySelector('#call-timeout')
+        .addEventListener('click', async () => {
+          try {
+            const result = await framecast.call('timeoutFunction');
+            document.querySelector('ul').innerHTML =
+              `<li>
+                        <pre>${JSON.stringify(result, null, 2)}</pre>
+                        </li>` + document.querySelector('ul').innerHTML;
+          } catch (error) {
+            document.querySelector('ul').innerHTML =
+              `<li>
+                        <pre>${JSON.stringify(error.message, null, 2)}</pre>
+                        </li>` + document.querySelector('ul').innerHTML;
+          }
+        });
+    </script>
+  </body>
+</html>
