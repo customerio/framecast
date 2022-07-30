@@ -1,0 +1,13 @@
+lib
+node_modules
+
+npm-debug.log*
+npm-error.log*
+.parcel-cache
+
+dist
+src
+__tests__
+package-lock.json
+.prettierrc
+.eslintrc.json

@@ -17,6 +17,14 @@
     "lint": "eslint src",
     "dev": "npx parcel example/index.html"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/useparcel/framecast.git"
+  },
+  "bugs": {
+    "url": "https://github.com/useparcel/framecast/issues"
+  },
+  "homepage": "https://github.com/useparcel/framecast",
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"
