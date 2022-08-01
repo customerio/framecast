@@ -61,7 +61,7 @@ export class Framecast {
   > = new Map();
 
   constructor(target: Window, config?: Partial<FramecastConfig>) {
-    if (!isWindow(target)) {
+    if (!target) {
       throw new Error(`Framecast must be initialized with a window object`);
     }
 
@@ -314,11 +314,4 @@ export class Framecast {
       clearTimeout(pendingCall.timeout);
     }
   }
-}
-
-function isWindow(window: any) {
-  const str = Object.prototype.toString.call(window);
-  return ['[object DOMWindow]', '[object Window]', '[object global]'].includes(
-    str
-  );
 }
