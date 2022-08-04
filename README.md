@@ -28,7 +28,7 @@ Broadcasts allow you to send one-way communications. The `broadcast` event is em
 
 You can add many listeners to the `broadcast` event.
 
-The only argument contains an object with a deserialized message.
+The only argument contains an object with a deserialized message. All data sent via framecast must be valid JSON.
 
 ### Example
 
@@ -60,7 +60,7 @@ framecast.broadcast('Hello world');
 
 Framecast allows you to call functions across frames. The `function:*` event is emitted when the call is made. The returned value of the listener is passed back to the calling frame.
 
-Note, unlike the `broadcast` event, `function:*` events can only have one listener.
+Note, unlike the `broadcast` event, `function:*` events can only have one listener. All data sent via framecast must be valid JSON.
 
 ### Creating a function
 

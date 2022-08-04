@@ -99,7 +99,7 @@ export class Framecast {
   private postMessage(type: string, message: any) {
     debug('Sending message', type, { ...message, type, channel: this.channel });
     this.target.postMessage(
-      { ...message, type, channel: this.channel },
+      JSON.parse(JSON.stringify({ ...message, type, channel: this.channel })),
       this.origin
     );
   }
