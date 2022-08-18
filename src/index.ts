@@ -194,10 +194,12 @@ export class Framecast {
     try {
       const data = event.data;
       if (this.origin !== '*' && event.origin !== this.origin) {
+        // Origin did not match target
         return;
       }
 
       if (this.channel !== data.channel) {
+        // Channel did not match target
         return;
       }
 
@@ -250,6 +252,7 @@ export class Framecast {
       }
       this.postMessage('functionResult', { id, result });
     } catch (error) {
+      // `Error calling function, sending back error
       this.postMessage('functionResult', { id, error });
       return;
     }
