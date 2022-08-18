@@ -1,5 +1,3 @@
-const debug = require('debug')('framecast');
-
 /**
  * Config for the framecast
  */
@@ -72,7 +70,6 @@ export class Framecast {
       this.handlePostedMessage.bind(this)
     );
     this.self.addEventListener('message', this.handlePostedMessage.bind(this));
-    debug('Created framecast');
   }
 
   /**
@@ -97,7 +94,6 @@ export class Framecast {
   }
 
   private postMessage(type: string, message: any) {
-    debug('Sending message', type, { ...message, type, channel: this.channel });
     this.target.postMessage(
       JSON.parse(JSON.stringify({ ...message, type, channel: this.channel })),
       this.origin
@@ -122,8 +118,6 @@ export class Framecast {
       throw new Error(`Listener already exists for ${eventType}`);
     }
 
-    debug(`Added listener for ${eventType}`);
-
     this.listeners[eventType].add(listener as any);
   }
 
@@ -134,7 +128,6 @@ export class Framecast {
    */
   off(eventType: keyof ListenerMap, listener: Function): void {
     if (this.listeners[eventType]) {
-      debug(`Removed listener for ${eventType}`);
       this.listeners[eventType].delete(listener as any);
     }
   }
@@ -201,22 +194,14 @@ export class Framecast {
     try {
       const data = event.data;
       if (this.origin !== '*' && event.origin !== this.origin) {
-        debug('Origin did not match target', {
-          origin: event.origin,
-          target: this.config.origin,
-        });
+        // Origin did not match target
         return;
       }
 
       if (this.channel !== data.channel) {
-        debug('Channel did not match target', {
-          channel: data.channel,
-          target: this.channel,
-        });
+        // Channel did not match target
         return;
       }
-
-      debug('Received data', data);
 
       if (data.type === 'broadcast') {
         this.handleBroadcast(data.data);
@@ -225,11 +210,10 @@ export class Framecast {
       } else if (data.type.startsWith('function:')) {
         this.handleFunctionCall(data.type, data.id, data.args);
       } else {
-        debug('Unknown message type', data.type);
+        // Unknown message type
       }
     } catch (error) {
-      debug('Could not handle message', event.data);
-      debug(error);
+      // could not handle message
     }
   }
 
@@ -238,8 +222,6 @@ export class Framecast {
    * @param data
    */
   private async handleBroadcast(data: any) {
-    debug(`Emitting broadcast`);
-
     for (const listener of this.listeners['broadcast'] ?? []) {
       (listener as Function).apply(this, [data]);
     }
@@ -255,10 +237,7 @@ export class Framecast {
     id: number,
     args: any[]
   ) {
-    debug(`Calling ${eventType} with ${args?.length} arguments`);
-
     if (!this.listeners[eventType] || this.listeners[eventType].size === 0) {
-      debug(`No listeners for ${eventType}, sending back error`);
       this.postMessage('functionResult', {
         id,
         error: new Error(`No listeners for ${eventType}`),
@@ -271,10 +250,9 @@ export class Framecast {
       for (const listener of this.listeners[eventType] ?? []) {
         result = await (listener as Function).apply(this, args);
       }
-      debug(`Sending back result for id: ${id}`, result);
       this.postMessage('functionResult', { id, result });
     } catch (error) {
-      debug(`Error calling ${eventType}, sending back error`, error);
+      // `Error calling function, sending back error
       this.postMessage('functionResult', { id, error });
       return;
     }
@@ -291,7 +269,7 @@ export class Framecast {
   }) {
     const pendingCall = this.pendingFunctionCalls.get(data.id);
     if (pendingCall) {
-      debug('Received function result', data);
+      // Received function result
       this.clearPendingFunctionCall(data.id);
       if (data.error) {
         pendingCall.reject(data.error);
@@ -299,7 +277,7 @@ export class Framecast {
         pendingCall.resolve(data.result);
       }
     } else {
-      debug('Received function result for unknown id', data);
+      // Received function result for unknown id
     }
   }
 
