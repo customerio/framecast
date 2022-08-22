@@ -35,7 +35,7 @@ The only argument contains an object with a deserialized message. All data sent 
 ###### Parent
 
 ```ts
-import Framecast from 'framecast';
+import { Framecast } from 'framecast';
 
 const target = document.querySelector('iframe').contentWindow;
 const framecast = new Framecast(target);
@@ -48,7 +48,7 @@ framecast.on('broadcast', (message: any) => {
 ###### Child
 
 ```ts
-import Framecast from 'framecast';
+import { Framecast } from 'framecast';
 
 const target = window.parent;
 const framecast = new Framecast(target);
@@ -69,7 +69,7 @@ Create a function by adding a listener for the `function:*` event where `*` is t
 ###### Child
 
 ```ts
-import Framecast from 'framecast';
+import { Framecast } from 'framecast';
 
 const target = window.parent;
 const framecast = new Framecast(target);
@@ -86,7 +86,7 @@ To call the function from another frame, we use `call`. Note, that all functions
 ###### Parent
 
 ```ts
-import Framecast from 'framecast';
+import { Framecast } from 'framecast';
 
 const target = document.querySelector('iframe').contentWindow;
 const framecast = new Framecast(target);
