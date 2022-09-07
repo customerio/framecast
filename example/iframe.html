@@ -43,6 +43,10 @@
         });
       });
 
+      framecast.on('function:errorFunction', () => {
+        throw new Error('This is an error');
+      });
+
       document.querySelector('button').addEventListener('click', () => {
         framecast.broadcast({
           message: 'Hello from the child!',
