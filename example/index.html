@@ -15,6 +15,7 @@
         <button id="call-get-child-title">Call get child title</button>
         <button id="call-undefined">Call undefined function</button>
         <button id="call-timeout">Call function that times out</button>
+        <button id="call-error">Call function that throw an error</button>
       </div>
       <ul></ul>
     </div>
@@ -124,6 +125,26 @@
                         <pre>${JSON.stringify(result, null, 2)}</pre>
                         </li>` + document.querySelector('ul').innerHTML;
           } catch (error) {
+            document.querySelector('ul').innerHTML =
+              `<li>
+                        <pre>${JSON.stringify(error.message, null, 2)}</pre>
+                        </li>` + document.querySelector('ul').innerHTML;
+          }
+        });
+         /**
+       * Call a function that times out
+       */
+      document
+        .querySelector('#call-error')
+        .addEventListener('click', async () => {
+          try {
+            const result = await framecast.call('errorFunction');
+            document.querySelector('ul').innerHTML =
+              `<li>
+                        <pre>${JSON.stringify(result, null, 2)}</pre>
+                        </li>` + document.querySelector('ul').innerHTML;
+          } catch (error) {
+            console.log({error})
             document.querySelector('ul').innerHTML =
               `<li>
                         <pre>${JSON.stringify(error.message, null, 2)}</pre>

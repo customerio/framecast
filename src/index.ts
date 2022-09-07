@@ -1,3 +1,5 @@
+import superjson from 'superjson';
+
 /**
  * Config for the framecast
  */
@@ -95,7 +97,7 @@ export class Framecast {
 
   private postMessage(type: string, message: any) {
     this.target.postMessage(
-      JSON.parse(JSON.stringify({ ...message, type, channel: this.channel })),
+      superjson.stringify({ ...message, type, channel: this.channel }),
       this.origin
     );
   }
@@ -192,7 +194,7 @@ export class Framecast {
    */
   private async handlePostedMessage(event: MessageEvent) {
     try {
-      const data = event.data;
+      const data = superjson.parse(event.data) as any;
       if (this.origin !== '*' && event.origin !== this.origin) {
         // Origin did not match target
         return;
