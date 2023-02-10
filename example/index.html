@@ -9,13 +9,17 @@
   <body style="display: flex; margin: 0; height: 100vh; width: 100vw">
     <div style="width: 50%; padding: 20px">
       <h3>Parent</h3>
-      <div style="display: flex; gap: 6px">
+      <div style="display: flex; gap: 6px; align-items: flex-start">
         <button id="send-message">Send message to child</button>
         <button id="toggle-console-log">Toggle console.log</button>
         <button id="call-get-child-title">Call get child title</button>
         <button id="call-undefined">Call undefined function</button>
         <button id="call-timeout">Call function that times out</button>
         <button id="call-error">Call function that throw an error</button>
+        <div>
+          <button id="call-evaluate">Call evaluate</button>
+          <textarea>() => {return 'hello world'}</textarea>
+        </div>
       </div>
       <ul></ul>
     </div>
@@ -131,7 +135,7 @@
                         </li>` + document.querySelector('ul').innerHTML;
           }
         });
-         /**
+      /**
        * Call a function that times out
        */
       document
@@ -144,7 +148,35 @@
                         <pre>${JSON.stringify(result, null, 2)}</pre>
                         </li>` + document.querySelector('ul').innerHTML;
           } catch (error) {
-            console.log({error})
+            console.log({ error });
+            document.querySelector('ul').innerHTML =
+              `<li>
+                        <pre>${JSON.stringify(error.message, null, 2)}</pre>
+                        </li>` + document.querySelector('ul').innerHTML;
+          }
+        });
+
+      /**
+       * Call evaluate
+       */
+      document
+        .querySelector('#call-evaluate')
+        .addEventListener('click', async () => {
+          try {
+            const result = await framecast.evaluate(
+              document.querySelector('textarea').value,
+              "I'm a string",
+              123,
+              true,
+              { object: 'I am an object' },
+              ['I', 'am', 'an', 'array']
+            );
+            document.querySelector('ul').innerHTML =
+              `<li>
+                        <pre>${JSON.stringify(result, null, 2)}</pre>
+                        </li>` + document.querySelector('ul').innerHTML;
+          } catch (error) {
+            console.log({ error });
             document.querySelector('ul').innerHTML =
               `<li>
                         <pre>${JSON.stringify(error.message, null, 2)}</pre>

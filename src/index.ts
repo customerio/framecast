@@ -8,6 +8,7 @@ export type FramecastConfig = {
   channel: string | null;
   self: Window | null;
   functionTimeoutMs: number;
+  supportEvaluate: boolean;
 };
 
 /**
@@ -45,6 +46,7 @@ export class Framecast {
     channel: null,
     self: null,
     functionTimeoutMs: 10000,
+    supportEvaluate: false,
   };
 
   /**
@@ -72,6 +74,12 @@ export class Framecast {
       this.handlePostedMessage.bind(this)
     );
     this.self.addEventListener('message', this.handlePostedMessage.bind(this));
+
+    if (this.config.supportEvaluate) {
+      this.on('function:evaluate', async (fn: string) => {
+        return eval(fn);
+      });
+    }
   }
 
   /**
@@ -186,6 +194,27 @@ export class Framecast {
       this.pendingFunctionCalls.set(id, { timeout, resolve, reject });
       this.postMessage(`function:${functionName}`, { id, args });
     });
+  }
+
+  /**
+   * Evaluates the given function in the context of the target window
+   * and returns the result.
+   *
+   * Note: the target window must have the `supportEvaluate` option set to true
+   *
+   * Pass in additional arguments to the evaluate function by passing them as additional arguments to this function.
+   *
+   * The arguments must be serializable using JSON.stringify
+   */
+  async evaluate<ReturnValue = any>(
+    fn: (...args: any[]) => ReturnValue,
+    ...args: any[]
+  ): Promise<ReturnValue> {
+    const fnString = fn.toString();
+    const argsString = args.map((a) => JSON.stringify(a)).join(',');
+    const calledFnString = `(${fnString})(${argsString})`;
+
+    return this.call('evaluate', calledFnString);
   }
 
   /**
