@@ -176,11 +176,11 @@ evaluate<ReturnType = any>(fn: (...args: any[]) => ReturnType, ...args: any[]) =
 
 
 type FramecastConfig = {
-origin: string | null;
-channel: string | null;
-self: Window | null;
-functionTimeoutMs: number;
-supportEvaluate: boolean;
+  origin: string | null;
+  channel: string | null;
+  self: Window | null;
+  functionTimeoutMs: number;
+  supportEvaluate: boolean;
 };
 
 ```
