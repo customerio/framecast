@@ -173,16 +173,16 @@ call(type: `function:${string}`, ...args: any[]) => Promise<any>;
 
 // evaluate
 evaluate<ReturnType = any>(fn: (...args: any[]) => ReturnType, ...args: any[]) => Promise<ReturnType>;
-```
+
 
 type FramecastConfig = {
 origin: string | null;
 channel: string | null;
 self: Window | null;
 functionTimeoutMs: number;
+supportEvaluate: boolean;
 };
 
 ```
 
 Inspired by [Tabcast](https://github.com/mat-sz/tabcast)
-```
