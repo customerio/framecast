@@ -182,7 +182,6 @@ type FramecastConfig = {
   functionTimeoutMs: number;
   supportEvaluate: boolean;
 };
-
 ```
 
 Inspired by [Tabcast](https://github.com/mat-sz/tabcast)
