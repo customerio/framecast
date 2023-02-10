@@ -108,6 +108,52 @@ try {
 
 By default Framecast will throw an error if the handler take more than 10 seconds to complete. You can customize this with the `config.functionTimeoutMs` option.
 
+## Evaluating arbitrary code
+
+Framecast has a built-in function named `evaluate`. This evaluates the given function in the context of the target window.
+
+The framecast instance in the child must opt-in to this feature by setting `config.supportEvaluate` to `true`. Doing so comes with all of the security risks of `eval()` so think carefully before enabling this.
+
+This was inspired by playwright's [evaluate](https://playwright.dev/docs/evaluating) function.
+
+###### Child
+
+```ts
+import { Framecast } from 'framecast';
+
+const target = window.parent;
+const framecast = new Framecast(target, { supportEvaluate: true });
+```
+
+###### Parent
+
+```ts
+import { Framecast } from 'framecast';
+
+const target = document.querySelector('iframe').contentWindow;
+const framecast = new Framecast(target);
+
+const bodyId = await framecast.evaluate(() =>
+  document.querySelector('body').getAttribute('id')
+);
+```
+
+### Passing arguments
+
+You can pass arguments to the function by passing them as additional arguments to `evaluate`. Arguments can be any [Serializable](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify#description) values.
+
+```ts
+import { Framecast } from 'framecast';
+
+const target = document.querySelector('iframe').contentWindow;
+const framecast = new Framecast(target);
+
+const bodyId = await framecast.evaluate(
+  (selector) => document.querySelector(selector).getAttribute('id'),
+  'body'
+);
+```
+
 ## API
 
 ```ts
@@ -125,12 +171,18 @@ off(type: `function:${string}`, listener: (...args: any[]) => void);
 call(type: `function:${string}`, ...args: any[]) => Promise<any>;
 
 
+// evaluate
+evaluate<ReturnType = any>(fn: (...args: any[]) => ReturnType, ...args: any[]) => Promise<ReturnType>;
+```
+
 type FramecastConfig = {
-  origin: string | null;
-  channel: string | null;
-  self: Window | null;
-  functionTimeoutMs: number;
+origin: string | null;
+channel: string | null;
+self: Window | null;
+functionTimeoutMs: number;
 };
+
 ```
 
 Inspired by [Tabcast](https://github.com/mat-sz/tabcast)
+```

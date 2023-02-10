@@ -12,7 +12,9 @@
     <ul></ul>
     <script type="module">
       import { Framecast } from '../src';
-      const framecast = new Framecast(window.parent);
+      const framecast = new Framecast(window.parent, {
+        supportEvaluate: true,
+      });
 
       framecast.on('broadcast', (data) => {
         document.querySelector('ul').innerHTML =
