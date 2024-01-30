@@ -250,18 +250,16 @@ export class Framecast {
        * Listen for changes to the state from other windows
        */
       function receiveValue(message: unknown) {
-        if (typeof message !== 'object' || !message) {
+        if (!isStateSyncMessage(message)) {
           return;
         }
 
-        if ('type' in message && message.type !== 'state:sync') {
+        if (message.key !== key) {
           return;
         }
 
-        if ('key' in message && message.key === key && 'value' in message) {
-          isInitialValue = false;
-          $atom.set(message.value as StateType);
-        }
+        isInitialValue = false;
+        $atom.set(message.value);
       }
 
       /**
@@ -397,4 +395,23 @@ export class Framecast {
       clearTimeout(pendingCall.timeout);
     }
   }
+}
+
+function isStateSyncMessage(
+  message: any
+): message is { type: 'state:sync'; key: string; value: any } {
+  if (!message) {
+    return false;
+  }
+
+  if (typeof message !== 'object') {
+    return false;
+  }
+
+  return (
+    'key' in message &&
+    'value' in message &&
+    'type' in message &&
+    message.type === 'state:sync'
+  );
 }
