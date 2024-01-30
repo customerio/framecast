@@ -1,3 +1,5 @@
+import { atom, WritableAtom } from 'nanostores/atom';
+import { onMount } from 'nanostores/lifecycle';
 import superjson from 'superjson';
 
 /**
@@ -215,6 +217,78 @@ export class Framecast {
     const calledFnString = `(${fnString})(${argsString})`;
 
     return this.call('evaluate', calledFnString);
+  }
+
+  /**
+   * Creates state that is synced between the two windows
+   */
+  state<StateType = any>(
+    key: string,
+    initialValue: StateType
+  ): WritableAtom<StateType> {
+    let isInitialValue = true;
+    const $atom = atom<StateType>(initialValue);
+
+    /**
+     * Get the initial value from the other window
+     */
+    this.call<StateType>(`state:get:${key}`)
+      .then((value) => {
+        // if we have received another value already,
+        // don't set the initial value
+        if (isInitialValue) {
+          $atom.set(value);
+        }
+      })
+      .catch(() => {
+        // do nothing since we already have the initial value
+        // if we are the first to mount, we'll set the value
+      });
+
+    onMount($atom, () => {
+      /**
+       * Listen for changes to the state from other windows
+       */
+      function receiveValue(message: unknown) {
+        if (typeof message !== 'object' || !message) {
+          return;
+        }
+
+        if ('type' in message && message.type !== 'state:sync') {
+          return;
+        }
+
+        if ('key' in message && message.key === key && 'value' in message) {
+          isInitialValue = false;
+          $atom.set(message.value as StateType);
+        }
+      }
+
+      /**
+       * Provide the initial value to the other window
+       */
+      async function sendValue() {
+        return $atom.get();
+      }
+
+      this.on('broadcast', receiveValue);
+      this.on(`function:state:get:${key}`, sendValue);
+
+      return () => {
+        this.off('broadcast', receiveValue);
+        this.off(`function:state:get:${key}`, sendValue);
+      };
+    });
+
+    const broadcast = this.broadcast.bind(this);
+    return {
+      ...$atom,
+      set(value: StateType) {
+        isInitialValue = false;
+        $atom.set(value);
+        broadcast({ type: 'state:sync', key, value });
+      },
+    };
   }
 
   /**

@@ -9,6 +9,10 @@
   <body style="display: flex; margin: 0; height: 100vh; width: 100vw">
     <div style="width: 50%; padding: 20px">
       <h3>Parent</h3>
+      <div>
+        Shared counter: <span id="counter"></span>
+        <button id="increment">Increment</button>
+      </div>
       <div style="display: flex; gap: 6px; align-items: flex-start">
         <button id="send-message">Send message to child</button>
         <button id="toggle-console-log">Toggle console.log</button>
@@ -33,10 +37,21 @@
     <script type="module">
       localStorage.debug = 'framecast';
       import { Framecast } from '../src';
+
       const framecast = new Framecast(
         document.querySelector('iframe').contentWindow,
         { functionTimeoutMs: 5000 }
       );
+
+      const $counter = framecast.state('counter', 2);
+
+      $counter.subscribe((value) => {
+        document.querySelector('#counter').innerText = value;
+      });
+
+      document.querySelector('#increment').addEventListener('click', () => {
+        $counter.set(($counter.get() || 0) + 1);
+      });
 
       /**
        * Add to the list when we get a message from the child

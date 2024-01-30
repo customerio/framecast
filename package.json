@@ -1,6 +1,6 @@
 {
   "name": "framecast",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "TypeScript cross-frame communication library.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -19,12 +19,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/useparcel/framecast.git"
+    "url": "https://github.com/customerio/framecast.git"
   },
   "bugs": {
-    "url": "https://github.com/useparcel/framecast/issues"
+    "url": "https://github.com/customerio/framecast/issues"
   },
-  "homepage": "https://github.com/useparcel/framecast",
+  "homepage": "https://github.com/customerio/framecast",
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"
@@ -55,6 +55,7 @@
     "typescript": "^4.7.4"
   },
   "dependencies": {
+    "nanostores": "^0.9.5",
     "superjson": "^1.9.1"
   }
 }

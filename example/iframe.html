@@ -8,19 +8,34 @@
   </head>
   <body>
     <h3>Child</h3>
-    <button>Send message to parent</button>
+    <div>
+      Shared counter: <span id="counter"></span>
+      <button id="increment">Increment</button>
+    </div>
+    <button id="hello">Send message to parent</button>
     <ul></ul>
     <script type="module">
       import { Framecast } from '../src';
+
       const framecast = new Framecast(window.parent, {
         supportEvaluate: true,
+      });
+
+      const $counter = framecast.state('counter', 0);
+
+      $counter.subscribe((value) => {
+        document.querySelector('#counter').innerText = value;
+      });
+
+      document.querySelector('#increment').addEventListener('click', () => {
+        $counter.set(($counter.get() || 0) + 1);
       });
 
       framecast.on('broadcast', (data) => {
         document.querySelector('ul').innerHTML =
           `<li>
-          <pre>${JSON.stringify(data, null, 2)}</pre>
-        </li>` + document.querySelector('ul').innerHTML;
+                <pre>${JSON.stringify(data, null, 2)}</pre>
+              </li>` + document.querySelector('ul').innerHTML;
       });
 
       let index = 0;
@@ -49,7 +64,7 @@
         throw new Error('This is an error');
       });
 
-      document.querySelector('button').addEventListener('click', () => {
+      document.querySelector('#hello').addEventListener('click', () => {
         framecast.broadcast({
           message: 'Hello from the child!',
           timestamp: Date.now(),
