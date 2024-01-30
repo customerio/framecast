@@ -268,8 +268,6 @@ export class Framecast {
        * Provide the initial value to the other window
        */
       async function sendValue() {
-        await new Promise((resolve) => setTimeout(resolve, 1000)); // wait for the atom to be set
-
         return $atom.get();
       }
 
