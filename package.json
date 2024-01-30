@@ -1,6 +1,6 @@
 {
   "name": "framecast",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "TypeScript cross-frame communication library.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -13,9 +13,16 @@
   "scripts": {
     "prepare": "npm run build",
     "test": "jest",
-    "build": "tsc",
+    "build": "tsup src/index.ts --format cjs,esm --dts-resolve --minify --clean --sourcemap --out-dir lib",
     "lint": "eslint src",
     "dev": "npx parcel example/index.html"
+  },
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "require": "./lib/index.js",
+      "import": "./lib/index.mjs"
+    }
   },
   "repository": {
     "type": "git",
@@ -52,6 +59,7 @@
     "prettier": "^2.7.1",
     "process": "^0.11.10",
     "ts-jest": "^28.0.7",
+    "tsup": "^8.0.1",
     "typescript": "^4.7.4"
   },
   "dependencies": {
