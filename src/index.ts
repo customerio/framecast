@@ -414,9 +414,3 @@ function isStateSyncMessage(
     message.type === 'state:sync'
   );
 }
-
-const framecast = new Framecast(window.parent);
-
-const a = framecast.state('count', 0);
-
-const v = a.get();
