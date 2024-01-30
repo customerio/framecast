@@ -5,3 +5,4 @@ npm-debug.log*
 npm-error.log*
 .parcel-cache
 dist
+.DS_Store
