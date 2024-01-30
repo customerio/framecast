@@ -108,6 +108,65 @@ try {
 
 By default Framecast will throw an error if the handler take more than 10 seconds to complete. You can customize this with the `config.functionTimeoutMs` option.
 
+## Shared State
+
+Framecast has support for shared state between the parent and child frames. This is done by using [`nanostores`](http://github.com/nanostores/nanostores).
+
+Each state is an [`atom`](https://github.com/nanostores/nanostores#atoms) and can be subscribed to. When the state is updated in one frame it will be updated in the other frame.
+
+### Creating shared state
+
+You can create a shared state by calling `state` on the framecast instance. The first argument is the name of the state and the second is the initial value.
+
+```ts
+const $counter = framecast.state('counter', 0);
+
+$counter.subscribe((value) => {
+  console.log('counter', value);
+});
+```
+
+On initial creation the state will be set to the initial value. If the state already exists in the other frame will be synced to the value of the other frame.
+
+**Note: you must subscribe to the state to mount it.**
+
+### Example
+
+In the following example when either the parent or child frame updates the `$counter` the other frame will be updated.
+
+The implmentation is identical in both the parent and child frames.
+
+###### Child
+
+```ts
+import { Framecast } from 'framecast';
+
+const framecast = new Framecast(window.parent);
+
+const $counter = framecast.state('counter', 0);
+
+$counter.subscribe((value) => {
+  console.log('counter', value);
+});
+
+document.querySelector('button').addEventListener('click', () => {
+  $counter.set($counter.get() + 1);
+});
+```
+
+###### Parent
+
+```ts
+import { Framecast } from 'framecast';
+import { persistentAtom, setPersistentEngine } from '@nanostores/persistent';
+
+const framecast = new Framecast(document.querySelector('iframe').contentWindow);
+
+$counter.subscribe((value) => {
+  console.log('counter', value);
+});
+```
+
 ## Evaluating arbitrary code
 
 Framecast has a built-in function named `evaluate`. This evaluates the given function in the context of the target window.
