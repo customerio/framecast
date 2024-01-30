@@ -1,5 +1,4 @@
-import { atom, WritableAtom } from 'nanostores/atom';
-import { onMount } from 'nanostores/lifecycle';
+import { atom, WritableAtom, onMount } from 'nanostores';
 import superjson from 'superjson';
 
 /**
