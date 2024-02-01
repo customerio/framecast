@@ -1,6 +1,8 @@
 import { atom, WritableAtom, onMount } from 'nanostores';
 import superjson from 'superjson';
 
+export { WritableAtom } from 'nanostores';
+
 /**
  * Config for the framecast
  */

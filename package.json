@@ -1,6 +1,6 @@
 {
   "name": "framecast",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "TypeScript cross-frame communication library.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -13,7 +13,7 @@
   "scripts": {
     "prepare": "npm run build",
     "test": "jest",
-    "build": "tsup src/index.ts --format cjs,esm --dts-resolve --minify --clean --sourcemap --out-dir lib",
+    "build": "tsup src/index.ts --format cjs,esm --dts-resolve --minify --clean --sourcemap --out-dir lib --replaceNodeEnv",
     "lint": "eslint src",
     "dev": "npx parcel example/index.html"
   },
