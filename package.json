@@ -13,7 +13,7 @@
   "scripts": {
     "prepare": "npm run build",
     "test": "jest",
-    "build": "tsup src/index.ts --format cjs,esm --dts-resolve --minify --clean --sourcemap --out-dir lib",
+    "build": "tsup src/index.ts --format cjs,esm --dts-resolve --minify --clean --sourcemap --out-dir lib --replaceNodeEnv",
     "lint": "eslint src",
     "dev": "npx parcel example/index.html"
   },
