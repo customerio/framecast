@@ -12,6 +12,7 @@ export type FramecastConfig = {
   self: Window | null;
   functionTimeoutMs: number;
   supportEvaluate: boolean;
+  allowErrorProps?: string[];
 };
 
 /**
@@ -82,6 +83,10 @@ export class Framecast {
       this.on('function:evaluate', async (fn: string) => {
         return eval(fn);
       });
+    }
+
+    if (this.config.allowErrorProps && this.config.allowErrorProps.length > 0) {
+      superjson.allowErrorProps(...this.config.allowErrorProps);
     }
   }
 
