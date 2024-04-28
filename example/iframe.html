@@ -64,6 +64,10 @@
         throw new Error('This is an error');
       });
 
+      framecast.on('function:getName', () => {
+        return prompt('What is your name? (I am asking from the child)');
+      });
+
       document.querySelector('#hello').addEventListener('click', () => {
         framecast.broadcast({
           message: 'Hello from the child!',
