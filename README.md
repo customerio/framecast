@@ -108,6 +108,14 @@ try {
 
 By default Framecast will throw an error if the handler take more than 10 seconds to complete. You can customize this with the `config.functionTimeoutMs` option.
 
+There are times where you don't want a function to timeout for individual calls. You can use `waitFor` to call a function without a timeout. It will return a `result` and `dispose` function. The `dispose` function will remove the listener.
+
+```ts
+const { result, dispose } = await framecast.waitFor('getElementId', 'body');
+
+console.log(await result);
+```
+
 ## Shared State
 
 Framecast has support for shared state between the parent and child frames. This is done by using [`nanostores`](http://github.com/nanostores/nanostores).
