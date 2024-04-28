@@ -12,6 +12,7 @@
       <div>
         Shared counter: <span id="counter"></span>
         <button id="increment">Increment</button>
+        <button id="getName">Get Name</button>
       </div>
       <div style="display: flex; gap: 6px; align-items: flex-start">
         <button id="send-message">Send message to child</button>
@@ -51,6 +52,15 @@
 
       document.querySelector('#increment').addEventListener('click', () => {
         $counter.set(($counter.get() || 0) + 1);
+      });
+
+      document.querySelector('#getName').addEventListener('click', async () => {
+        const { result } = framecast.waitFor('getName');
+
+        const name = await result;
+        alert(
+          `Hello ${name}. I got your name from the child and I'm showing it in an alert box from the parent.`
+        );
       });
 
       /**

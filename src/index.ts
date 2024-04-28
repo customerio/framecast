@@ -205,6 +205,41 @@ export class Framecast {
   }
 
   /**
+   * Calls a remote function and returns the result and a dispose function.
+   *
+   * Unlike `call`, this function does not throw an error if the function times out.
+   * Instead it is up to the caller to dispose of the function call and handle timeouts.
+   *
+   * Lifecycle
+   * -----
+   * self: waitFor() --->
+   * target: handlePostedMessage() -> handleFunctionCall() --->
+   * self: handleFunctionResult() -> resolve/reject the original promise -> clearPendingFunctionCall()
+   *
+   * @param functionName The name of the function to call.
+   * @param args Arguments to pass to the function.
+   * @returns The result of the function and a dispose function.
+   */
+  waitFor<ReturnValue = any>(
+    functionName: string,
+    ...args: any[]
+  ): { result: Promise<ReturnValue>; dispose: () => void } {
+    const id = Date.now();
+
+    const promise = new Promise<ReturnValue>((resolve, reject) => {
+      this.pendingFunctionCalls.set(id, { timeout: -1, resolve, reject });
+      this.postMessage(`function:${functionName}`, { id, args });
+    });
+
+    return {
+      result: promise,
+      dispose: () => {
+        this.clearPendingFunctionCall(id);
+      },
+    };
+  }
+
+  /**
    * Evaluates the given function in the context of the target window
    * and returns the result.
    *
