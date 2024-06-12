@@ -277,8 +277,14 @@ export class Framecast {
       .then((value) => {
         // if we have received another value already,
         // don't set the initial value
-        if (isInitialValue) {
+        if (isInitialValue && typeof value !== 'undefined') {
           $atom.set(value);
+        }
+
+        // if we didn't received an initial value but we have one,
+        // broadcast it to the other window
+        if (typeof value === 'undefined' && initialValue) {
+          broadcast({ type: 'state:sync', key, value: value || initialValue });
         }
       })
       .catch(() => {
