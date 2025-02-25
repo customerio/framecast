@@ -1,5 +1,6 @@
 import { atom, WritableAtom, onMount } from 'nanostores';
 import superjson from 'superjson';
+import { nanoid } from 'nanoId';
 
 export { WritableAtom } from 'nanostores';
 
@@ -62,7 +63,7 @@ export class Framecast {
    * Map of pending function calls
    */
   private pendingFunctionCalls: Map<
-    number,
+    string,
     { timeout: number; resolve: Function; reject: Function }
   > = new Map();
 
@@ -182,7 +183,7 @@ export class Framecast {
     functionName: string,
     ...args: any[]
   ): Promise<ReturnValue> {
-    const id = Date.now();
+    const id = nanoid();
 
     if (!this.config.functionTimeoutMs) {
       throw new Error(
@@ -224,7 +225,7 @@ export class Framecast {
     functionName: string,
     ...args: any[]
   ): { result: Promise<ReturnValue>; dispose: () => void } {
-    const id = Date.now();
+    const id = nanoid();
 
     const promise = new Promise<ReturnValue>((resolve, reject) => {
       this.pendingFunctionCalls.set(id, { timeout: -1, resolve, reject });
@@ -413,7 +414,7 @@ export class Framecast {
    */
   private async handleFunctionResult(data: {
     type: 'functionResult';
-    id: number;
+    id: string;
     result?: any;
     error?: Error;
   }) {
@@ -435,7 +436,7 @@ export class Framecast {
    * Clears a pending function call
    * @param id The id of the pending function call
    */
-  private clearPendingFunctionCall(id: number) {
+  private clearPendingFunctionCall(id: string) {
     const pendingCall = this.pendingFunctionCalls.get(id);
     if (pendingCall) {
       this.pendingFunctionCalls.delete(id);
