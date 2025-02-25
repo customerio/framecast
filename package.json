@@ -63,7 +63,7 @@
     "typescript": "^4.7.4"
   },
   "dependencies": {
-    "nanoid": "^5.1.2",
+    "nanoid": "^3.3.8",
     "nanostores": "^0.9.5",
     "superjson": "^1.9.1"
   }
