@@ -1,6 +1,6 @@
 import { atom, WritableAtom, onMount } from 'nanostores';
 import superjson from 'superjson';
-import { nanoid } from 'nanoId/non-secure';
+import { nanoid } from 'nanoId';
 
 export { WritableAtom } from 'nanostores';
 
